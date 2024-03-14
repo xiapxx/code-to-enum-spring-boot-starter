@@ -15,6 +15,12 @@ public interface Code2Enum<T> {
      */
     T getCode();
 
-    String message();
+    default String getMessage(){
+        return null;
+    };
+
+    default String getMessageEn(){
+        return null;
+    }
 
 }
