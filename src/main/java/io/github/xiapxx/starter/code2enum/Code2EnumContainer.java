@@ -1,4 +1,4 @@
-package com.xxx.starter.code2enum;
+package io.github.xiapxx.starter.code2enum;
 
 import java.util.List;
 import java.util.Map;

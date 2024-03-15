@@ -1,4 +1,4 @@
-package com.xxx.starter.code2enum;
+package io.github.xiapxx.starter.code2enum;
 
 import org.springframework.context.annotation.Import;
 import java.lang.annotation.Documented;
