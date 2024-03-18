@@ -2,7 +2,7 @@
 1.0.0版本
     使用:
         1. 通过@Code2EnumScanner开启编码转换为注解功能
-        2. 枚举类实现IntegerCode2Enum
+        2. 枚举类实现Code2Enum
         3. 通过Code2EnumHolder类, 实现了Code2Enum接口的枚举可以通过编码转换成枚举对象
 
 2.0.0版本
