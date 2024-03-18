@@ -15,11 +15,19 @@ public class Code2EnumTypeHandler<C, T extends Code2Enum<C>> extends BaseTypeHan
 
     private Code2EnumContainer<C, T> code2EnumContainer;
 
+    private Class<T> enumClass;
+
     private Class<C> codeClass;
 
-    public Code2EnumTypeHandler(Code2EnumContainer<C, T> code2EnumContainer){
+    public Code2EnumTypeHandler(Code2EnumContainer<C, T> code2EnumContainer, Class<T> enumClass){
         this.code2EnumContainer = code2EnumContainer;
         this.codeClass = (Class<C>) code2EnumContainer.getEnumList().get(0).getCode().getClass();
+        this.enumClass = enumClass;
+    }
+
+
+    Class<T> getEnumClass(){
+        return enumClass;
     }
 
     @Override

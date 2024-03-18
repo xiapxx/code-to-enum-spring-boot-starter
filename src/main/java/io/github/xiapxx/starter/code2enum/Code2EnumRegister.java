@@ -1,10 +1,11 @@
 package io.github.xiapxx.starter.code2enum;
 
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
+import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.core.type.filter.AssignableTypeFilter;
+import java.util.Set;
 
 /**
  * 注册【实现Code2Enum接口的枚举】
@@ -12,21 +13,45 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
  * @Author xiapeng
  * @Date 2024-01-05 09:53
  */
-public class Code2EnumRegister implements ImportBeanDefinitionRegistrar {
-
+public class Code2EnumRegister implements ImportSelector {
 
     @Override
-    public void registerBeanDefinitions(AnnotationMetadata importMetadata, BeanDefinitionRegistry registry) {
+    public String[] selectImports(AnnotationMetadata importMetadata) {
         AnnotationAttributes annoAttrs = AnnotationAttributes.fromMap(importMetadata.getAnnotationAttributes(Code2EnumScanner.class.getName()));
         String[] basePackages = annoAttrs.getStringArray("basePackages");
-        ClassPathCode2EnumScanner classPathCode2EnumScanner = new ClassPathCode2EnumScanner(registry);
-        classPathCode2EnumScanner.addIncludeFilter(new AssignableTypeFilter(Code2Enum.class) {
-            @Override
-            protected boolean matchClassName(String className) {
-                return false;
+        Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages(basePackages));
+        Set<Class<? extends Code2Enum>> code2EnumClassSet = reflections.getSubTypesOf(Code2Enum.class);
+        for (Class<? extends Code2Enum> enumClass : code2EnumClassSet) {
+            if(!Code2Enum.class.isAssignableFrom(enumClass) || !enumClass.isEnum()){
+                continue;
             }
-        });
-        classPathCode2EnumScanner.doScan(basePackages);
+            Code2EnumHolder.register(enumClass, new Code2EnumContainer<>(enumClass));
+        }
+
+        if(Code2EnumHolder.enumClass2ContainerMap.isEmpty()){
+            return null;
+        }
+
+        String typeHandlerRegister = getTypeHandlerRegister();
+        return typeHandlerRegister == null ? null : new String[]{typeHandlerRegister};
+    }
+
+    public String getTypeHandlerRegister() {
+        String typeHandlerRegister = null;
+        try {
+            Class.forName("com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer");
+            typeHandlerRegister = Code2EnumMybatisPlusTypeHandlerRegister.class.getName();
+        } catch (ClassNotFoundException e) {
+        }
+
+        if(typeHandlerRegister == null){
+            try {
+                Class.forName("org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer");
+                typeHandlerRegister = Code2EnumMybatisTypeHandlerRegister.class.getName();
+            } catch (ClassNotFoundException e) {
+            }
+        }
+        return typeHandlerRegister;
     }
 
 }

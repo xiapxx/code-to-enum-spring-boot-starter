@@ -13,9 +13,9 @@ import java.util.Map;
  */
 public class Code2EnumHolder {
 
-    private static final Map<Class<? extends Code2Enum>, Code2EnumContainer> enumClass2ContainerMap = new HashMap<>();
+    static final Map<Class<? extends Code2Enum>, Code2EnumContainer> enumClass2ContainerMap = new HashMap<>();
 
-    private static final Map<String, Code2EnumContainer> enumClassName2ContainerMap = new HashMap<>();
+    static final Map<String, Code2EnumContainer> enumClassName2ContainerMap = new HashMap<>();
 
     /**
      * 注册Code2Enum的枚举
