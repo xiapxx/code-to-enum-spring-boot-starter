@@ -1,11 +1,10 @@
 package io.github.xiapxx.starter.code2enum;
 
-import org.reflections.Reflections;
-import org.reflections.util.ConfigurationBuilder;
-import org.springframework.context.annotation.ImportAware;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
-import java.util.Set;
+import org.springframework.core.type.filter.AssignableTypeFilter;
 
 /**
  * 注册【实现Code2Enum接口的枚举】
@@ -13,20 +12,21 @@ import java.util.Set;
  * @Author xiapeng
  * @Date 2024-01-05 09:53
  */
-public class Code2EnumRegister implements ImportAware {
+public class Code2EnumRegister implements ImportBeanDefinitionRegistrar {
+
 
     @Override
-    public void setImportMetadata(AnnotationMetadata importMetadata) {
+    public void registerBeanDefinitions(AnnotationMetadata importMetadata, BeanDefinitionRegistry registry) {
         AnnotationAttributes annoAttrs = AnnotationAttributes.fromMap(importMetadata.getAnnotationAttributes(Code2EnumScanner.class.getName()));
         String[] basePackages = annoAttrs.getStringArray("basePackages");
-        Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages(basePackages));
-        Set<Class<? extends Code2Enum>> code2EnumClassSet = reflections.getSubTypesOf(Code2Enum.class);
-        for (Class<? extends Code2Enum> enumClass : code2EnumClassSet) {
-            if (!Code2Enum.class.isAssignableFrom(enumClass) || !enumClass.isEnum()) {
-                continue;
+        ClassPathCode2EnumScanner classPathCode2EnumScanner = new ClassPathCode2EnumScanner(registry);
+        classPathCode2EnumScanner.addIncludeFilter(new AssignableTypeFilter(Code2Enum.class) {
+            @Override
+            protected boolean matchClassName(String className) {
+                return false;
             }
-            Code2EnumHolder.register(enumClass, new Code2EnumContainer(enumClass));
-        }
+        });
+        classPathCode2EnumScanner.doScan(basePackages);
     }
 
 }

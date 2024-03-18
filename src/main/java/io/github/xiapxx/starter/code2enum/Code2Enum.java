@@ -11,7 +11,7 @@ public interface Code2Enum<T> {
     /**
      * 需保证一个枚举类中唯一
      *
-     * @return 一个枚举类中的唯一编码
+     * @return 一个枚举类中的唯一编码; 编码类型支持String, Integer, Long
      */
     T getCode();
 
