@@ -1,5 +1,7 @@
-package io.github.xiapxx.starter.code2enum;
+package io.github.xiapxx.starter.code2enum.core;
 
+import io.github.xiapxx.starter.code2enum.annotation.Code2EnumScanner;
+import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 import org.springframework.context.annotation.ImportSelector;

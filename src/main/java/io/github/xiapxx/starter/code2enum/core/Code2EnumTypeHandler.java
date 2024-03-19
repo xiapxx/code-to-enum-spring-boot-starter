@@ -1,5 +1,6 @@
-package io.github.xiapxx.starter.code2enum;
+package io.github.xiapxx.starter.code2enum.core;
 
+import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import java.sql.CallableStatement;
@@ -15,20 +16,13 @@ public class Code2EnumTypeHandler<C, T extends Code2Enum<C>> extends BaseTypeHan
 
     private Code2EnumContainer<C, T> code2EnumContainer;
 
-    private Class<T> enumClass;
-
     private Class<C> codeClass;
 
-    public Code2EnumTypeHandler(Code2EnumContainer<C, T> code2EnumContainer, Class<T> enumClass){
+    public Code2EnumTypeHandler(Code2EnumContainer<C, T> code2EnumContainer){
         this.code2EnumContainer = code2EnumContainer;
         this.codeClass = (Class<C>) code2EnumContainer.getEnumList().get(0).getCode().getClass();
-        this.enumClass = enumClass;
     }
 
-
-    Class<T> getEnumClass(){
-        return enumClass;
-    }
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException {

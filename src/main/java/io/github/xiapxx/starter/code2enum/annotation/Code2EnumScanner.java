@@ -1,5 +1,6 @@
-package io.github.xiapxx.starter.code2enum;
+package io.github.xiapxx.starter.code2enum.annotation;
 
+import io.github.xiapxx.starter.code2enum.core.Code2EnumRegister;
 import org.springframework.context.annotation.Import;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

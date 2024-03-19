@@ -1,5 +1,6 @@
-package io.github.xiapxx.starter.code2enum;
+package io.github.xiapxx.starter.code2enum.core;
 
+import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
@@ -19,7 +20,7 @@ public class Code2EnumMybatisTypeHandlerRegister implements ConfigurationCustomi
             if(code2EnumContainer.getEnumList().isEmpty()){
                 continue;
             }
-            typeHandlerRegistry.register(entry.getKey(), new Code2EnumTypeHandler<>(code2EnumContainer, entry.getKey()));
+            typeHandlerRegistry.register(entry.getKey(), new Code2EnumTypeHandler<>(code2EnumContainer));
         }
     }
 }

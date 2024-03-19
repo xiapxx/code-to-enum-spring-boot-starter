@@ -1,5 +1,6 @@
-package io.github.xiapxx.starter.code2enum;
+package io.github.xiapxx.starter.code2enum.core;
 
+import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

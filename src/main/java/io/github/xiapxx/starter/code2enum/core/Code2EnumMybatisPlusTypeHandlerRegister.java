@@ -1,7 +1,8 @@
-package io.github.xiapxx.starter.code2enum;
+package io.github.xiapxx.starter.code2enum.core;
 
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class Code2EnumMybatisPlusTypeHandlerRegister implements ConfigurationCus
             if(code2EnumContainer.getEnumList().isEmpty()){
                 continue;
             }
-            typeHandlerRegistry.register(entry.getKey(), new Code2EnumTypeHandler<>(code2EnumContainer, entry.getKey()));
+            typeHandlerRegistry.register(entry.getKey(), new Code2EnumTypeHandler<>(code2EnumContainer));
         }
     }
 }
