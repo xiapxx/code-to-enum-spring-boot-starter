@@ -16,9 +16,29 @@ class Code2EnumContainer<CODE, ENUM extends Code2Enum<CODE>> {
 
     private List<ENUM> enumList;
 
+    Class<CODE> codeClass;
+
     Code2EnumContainer(Class<ENUM> enumClazz){
         this.code2EnumMap = Stream.of(enumClazz.getEnumConstants()).collect(Collectors.toMap(item -> item.getCode(), item -> item, (o, n) -> n));
         this.enumList = Stream.of(enumClazz.getEnumConstants()).collect(Collectors.toList());
+        this.codeClass = this.enumList.isEmpty() ? null
+                : (Class<CODE>) this.enumList.stream().filter(item -> item.getCode() != null).map(item -> item.getCode()).findAny().get().getClass();
+    }
+
+    boolean isEmpty(){
+        return this.codeClass == null;
+    }
+
+    boolean isStringCode(){
+        return this.codeClass == String.class;
+    }
+
+    boolean isIntegerCode(){
+        return this.codeClass == Integer.class;
+    }
+
+    boolean isLongCode(){
+        return this.codeClass == Long.class;
     }
 
     ENUM toEnum(CODE code){

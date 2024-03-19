@@ -7,6 +7,8 @@ import org.reflections.util.ConfigurationBuilder;
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,9 +36,24 @@ public class Code2EnumRegister implements ImportSelector {
             return null;
         }
 
-        String typeHandlerRegister = getTypeHandlerRegister();
-        return typeHandlerRegister == null ? null : new String[]{typeHandlerRegister};
+        List<String> importsList = getImportList();
+        return importsList.isEmpty() ? null : importsList.toArray(new String[importsList.size()]);
     }
+
+    private List<String> getImportList(){
+        List<String> importsList = new ArrayList<>();
+        String typeHandlerRegister = getTypeHandlerRegister();
+        if(typeHandlerRegister != null){
+            importsList.add(typeHandlerRegister);
+        }
+        try {
+            Class.forName("org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer");
+            importsList.add(Code2EnumSerializerRegister.class.getName());
+        } catch (ClassNotFoundException e) {
+        }
+        return importsList;
+    }
+
 
     public String getTypeHandlerRegister() {
         String typeHandlerRegister = null;

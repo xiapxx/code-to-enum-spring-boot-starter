@@ -16,13 +16,9 @@ public class Code2EnumTypeHandler<C, T extends Code2Enum<C>> extends BaseTypeHan
 
     private Code2EnumContainer<C, T> code2EnumContainer;
 
-    private Class<C> codeClass;
-
     public Code2EnumTypeHandler(Code2EnumContainer<C, T> code2EnumContainer){
         this.code2EnumContainer = code2EnumContainer;
-        this.codeClass = (Class<C>) code2EnumContainer.getEnumList().get(0).getCode().getClass();
     }
-
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException {
@@ -43,57 +39,57 @@ public class Code2EnumTypeHandler<C, T extends Code2Enum<C>> extends BaseTypeHan
             ps.setLong(i, (Long) code);
             return;
         }
-        throw new IllegalArgumentException("不支持的编码类型 : " + codeClass.getName());
+        throw new IllegalArgumentException("不支持的编码类型 : " + code2EnumContainer.codeClass.getName());
     }
 
     @Override
     public T getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        if(rs.wasNull()){
+        if(rs.wasNull() || code2EnumContainer.isEmpty()){
             return null;
         }
-        if(codeClass == String.class){
+        if(code2EnumContainer.isStringCode()){
             return code2EnumContainer.toEnum((C) rs.getString(columnName));
         }
-        if(codeClass == Integer.class){
+        if(code2EnumContainer.isIntegerCode()){
             return code2EnumContainer.toEnum((C) Integer.valueOf(rs.getInt(columnName)));
         }
-        if(codeClass == Long.class){
+        if(code2EnumContainer.isLongCode()){
             return code2EnumContainer.toEnum((C) Long.valueOf(rs.getLong(columnName)));
         }
-        throw new IllegalArgumentException("不支持的编码类型 : " + codeClass.getName());
+        throw new IllegalArgumentException("不支持的编码类型 : " + code2EnumContainer.codeClass.getName());
     }
 
     @Override
     public T getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        if(rs.wasNull()){
+        if(rs.wasNull() || code2EnumContainer.isEmpty()){
             return null;
         }
-        if(codeClass == String.class){
+        if(code2EnumContainer.isStringCode()){
             return code2EnumContainer.toEnum((C) rs.getString(columnIndex));
         }
-        if(codeClass == Integer.class){
+        if(code2EnumContainer.isIntegerCode()){
             return code2EnumContainer.toEnum((C) Integer.valueOf(rs.getInt(columnIndex)));
         }
-        if(codeClass == Long.class){
+        if(code2EnumContainer.isLongCode()){
             return code2EnumContainer.toEnum((C) Long.valueOf(rs.getLong(columnIndex)));
         }
-        throw new IllegalArgumentException("不支持的编码类型 : " + codeClass.getName());
+        throw new IllegalArgumentException("不支持的编码类型 : " + code2EnumContainer.codeClass.getName());
     }
 
     @Override
     public T getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        if(cs.wasNull()){
+        if(cs.wasNull() || code2EnumContainer.isEmpty()){
             return null;
         }
-        if(codeClass == String.class){
+        if(code2EnumContainer.isStringCode()){
             return code2EnumContainer.toEnum((C) cs.getString(columnIndex));
         }
-        if(codeClass == Integer.class){
+        if(code2EnumContainer.isIntegerCode()){
             return code2EnumContainer.toEnum((C) Integer.valueOf(cs.getInt(columnIndex)));
         }
-        if(codeClass == Long.class){
+        if(code2EnumContainer.isLongCode()){
             return code2EnumContainer.toEnum((C) Long.valueOf(cs.getLong(columnIndex)));
         }
-        throw new IllegalArgumentException("不支持的编码类型 : " + codeClass.getName());
+        throw new IllegalArgumentException("不支持的编码类型 : " + code2EnumContainer.codeClass.getName());
     }
 }
