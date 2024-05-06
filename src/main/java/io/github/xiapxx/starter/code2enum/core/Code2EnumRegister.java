@@ -47,7 +47,7 @@ public class Code2EnumRegister implements ImportSelector {
             importsList.add(typeHandlerRegister);
         }
         try {
-            Class.forName("org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer");
+            Class.forName("com.fasterxml.jackson.databind.ObjectMapper");
             importsList.add(Code2EnumSerializerRegister.class.getName());
         } catch (ClassNotFoundException e) {
         }
