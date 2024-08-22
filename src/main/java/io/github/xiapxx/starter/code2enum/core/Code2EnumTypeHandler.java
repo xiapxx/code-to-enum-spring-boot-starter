@@ -44,7 +44,7 @@ public class Code2EnumTypeHandler<C, T extends Code2Enum<C>> extends BaseTypeHan
 
     @Override
     public T getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        if(rs.wasNull() || code2EnumContainer.isEmpty()){
+        if(code2EnumContainer.isEmpty()){
             return null;
         }
         if(code2EnumContainer.isStringCode()){
@@ -61,7 +61,7 @@ public class Code2EnumTypeHandler<C, T extends Code2Enum<C>> extends BaseTypeHan
 
     @Override
     public T getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        if(rs.wasNull() || code2EnumContainer.isEmpty()){
+        if(code2EnumContainer.isEmpty()){
             return null;
         }
         if(code2EnumContainer.isStringCode()){
@@ -78,7 +78,7 @@ public class Code2EnumTypeHandler<C, T extends Code2Enum<C>> extends BaseTypeHan
 
     @Override
     public T getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        if(cs.wasNull() || code2EnumContainer.isEmpty()){
+        if(code2EnumContainer.isEmpty()){
             return null;
         }
         if(code2EnumContainer.isStringCode()){
