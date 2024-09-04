@@ -1,5 +1,6 @@
 package io.github.xiapxx.starter.code2enum.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
 import io.github.xiapxx.starter.code2enum.interfaces.LanguageEnvGetter;
@@ -32,6 +33,10 @@ public class Code2EnumSerializerRegister implements BeanPostProcessor {
                 MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = (MappingJackson2HttpMessageConverter) messageConverter;
                 mappingJackson2HttpMessageConverter.getObjectMapper().registerModule(newSimpleModule());
             }
+        }
+        if(bean instanceof ObjectMapper){
+            ObjectMapper objectMapper = (ObjectMapper) bean;
+            objectMapper.registerModule(newSimpleModule());
         }
         return bean;
     }
