@@ -37,6 +37,36 @@ public class Code2EnumHolder {
      * @return 枚举数据
      * @param <T>
      */
+    public static <T extends Code2Enum> T toEnum(Long code, Class<T> code2EnumClass){
+        if(code == null){
+            return null;
+        }
+        return toEnum(code.toString(), code2EnumClass);
+    }
+
+    /**
+     * 获取枚举数据
+     *
+     * @param code code
+     * @param code2EnumClass code2EnumClass
+     * @return 枚举数据
+     * @param <T>
+     */
+    public static <T extends Code2Enum> T toEnum(Integer code, Class<T> code2EnumClass){
+        if(code == null){
+            return null;
+        }
+        return toEnum(code.toString(), code2EnumClass);
+    }
+
+    /**
+     * 获取枚举数据
+     *
+     * @param code code
+     * @param code2EnumClass code2EnumClass
+     * @return 枚举数据
+     * @param <T>
+     */
     public static <T extends Code2Enum> T toEnum(String code, Class<T> code2EnumClass) {
         if(!StringUtils.hasLength(code) || code2EnumClass == null){
             return null;
