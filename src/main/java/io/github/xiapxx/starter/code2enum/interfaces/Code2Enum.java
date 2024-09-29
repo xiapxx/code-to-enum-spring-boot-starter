@@ -1,6 +1,7 @@
 package io.github.xiapxx.starter.code2enum.interfaces;
 
 import io.github.xiapxx.starter.code2enum.enums.EnumCodeJdbcType;
+import org.springframework.util.StringUtils;
 
 /**
  * 枚举类需实现该接口
@@ -16,6 +17,22 @@ public interface Code2Enum {
      * @return 一个枚举类中的唯一编码
      */
     String getCode();
+
+    default Integer getIntCode() {
+        String code = getCode();
+        if(!StringUtils.hasLength(code)){
+            return null;
+        }
+        return Integer.valueOf(code);
+    }
+
+    default Long getLongCode(){
+        String code = getCode();
+        if(!StringUtils.hasLength(code)){
+            return null;
+        }
+        return Long.valueOf(code);
+    }
 
     default EnumCodeJdbcType enumCodeJdbcType(){
         return EnumCodeJdbcType.INT;

@@ -25,16 +25,15 @@ public class EnumMybatisTypeHandler<T extends Code2Enum> extends BaseTypeHandler
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException {
         EnumCodeJdbcType enumCodeJdbcType = parameter.enumCodeJdbcType();
-        String code = parameter.getCode();
         switch (enumCodeJdbcType) {
             case STRING:
-                ps.setString(i, code);
+                ps.setString(i, parameter.getCode());
                 break;
             case LONG:
-                ps.setLong(i, Long.valueOf(code));
+                ps.setLong(i, parameter.getLongCode());
                 break;
             case INT:
-                ps.setInt(i, Integer.valueOf(code));
+                ps.setInt(i, parameter.getIntCode());
                 break;
         }
     }
