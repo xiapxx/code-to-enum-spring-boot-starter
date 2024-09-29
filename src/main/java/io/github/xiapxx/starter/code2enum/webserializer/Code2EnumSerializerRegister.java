@@ -1,26 +1,26 @@
-package io.github.xiapxx.starter.code2enum.core;
+package io.github.xiapxx.starter.code2enum.webserializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
-import io.github.xiapxx.starter.code2enum.interfaces.LanguageEnvGetter;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author xiapeng
  * @Date 2024-03-19 13:16
  */
-public class Code2EnumSerializerRegister implements BeanPostProcessor {
+public class Code2EnumSerializerRegister<T extends Code2Enum> implements BeanPostProcessor {
 
-    @Autowired
-    private ObjectProvider<LanguageEnvGetter> languageEnvGetterObjectProvider;
+    private Set<Class<? extends Code2Enum>> enumClassSet;
+
+    public Code2EnumSerializerRegister(Set<Class<? extends Code2Enum>> enumClassSet) {
+        this.enumClassSet = enumClassSet;
+    }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -42,15 +42,11 @@ public class Code2EnumSerializerRegister implements BeanPostProcessor {
     }
 
     private SimpleModule newSimpleModule(){
-        LanguageEnvGetter languageEnvGetter = languageEnvGetterObjectProvider.getIfAvailable();
         SimpleModule simpleModule = new SimpleModule();
-        for (Map.Entry<Class<? extends Code2Enum>, Code2EnumContainer> entry : Code2EnumHolder.enumClass2ContainerMap.entrySet()) {
-            Code2EnumContainer code2EnumContainer = entry.getValue();
-            if(code2EnumContainer.isEmpty()){
-                continue;
-            }
-            simpleModule.addSerializer(entry.getKey(), new Code2EnumSerializer<>(languageEnvGetter));
-            simpleModule.addDeserializer(entry.getKey(), new Code2EnumDeserializer<>(code2EnumContainer));
+        for (Class<? extends Code2Enum> enumClass : enumClassSet) {
+            Class<T> itemEnumClass = (Class<T>) enumClass;
+            simpleModule.addSerializer(itemEnumClass, new Code2EnumSerializer<>());
+            simpleModule.addDeserializer(itemEnumClass, new Code2EnumDeserializer<>(itemEnumClass));
         }
         return simpleModule;
     }

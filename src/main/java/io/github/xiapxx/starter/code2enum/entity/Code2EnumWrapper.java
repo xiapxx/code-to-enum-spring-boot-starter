@@ -1,4 +1,4 @@
-package io.github.xiapxx.starter.code2enum.core;
+package io.github.xiapxx.starter.code2enum.entity;
 
 
 /**
@@ -7,15 +7,15 @@ package io.github.xiapxx.starter.code2enum.core;
  */
 public class Code2EnumWrapper {
 
-    private Object code;
+    private String code;
 
     private String message;
 
-    public Object getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Object code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
