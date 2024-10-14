@@ -21,8 +21,6 @@ public class Code2EnumConverter<T extends Code2Enum> implements GenericConverter
         this.enum2CodeClass = enum2CodeClass;
         convertiblePairs = new HashSet<>();
         convertiblePairs.add(new ConvertiblePair(String.class, enum2CodeClass));
-        convertiblePairs.add(new ConvertiblePair(Integer.class, enum2CodeClass));
-        convertiblePairs.add(new ConvertiblePair(Long.class, enum2CodeClass));
     }
 
     @Override
@@ -35,7 +33,6 @@ public class Code2EnumConverter<T extends Code2Enum> implements GenericConverter
         if(source == null){
             return null;
         }
-        String code = source instanceof String ? (String) source : source.toString();
-        return Code2EnumHolder.toEnum(code, enum2CodeClass);
+        return Code2EnumHolder.toEnum((String) source, enum2CodeClass);
     }
 }
