@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
@@ -38,7 +40,17 @@ public class Code2EnumSerializerRegister<T extends Code2Enum> implements BeanPos
             ObjectMapper objectMapper = (ObjectMapper) bean;
             objectMapper.registerModule(newSimpleModule());
         }
+        if(bean instanceof ConfigurableConversionService){
+            ConfigurableConversionService conversionService = (ConfigurableConversionService) bean;
+            addConverter(conversionService);
+        }
         return bean;
+    }
+
+    private void addConverter(ConfigurableConversionService conversionService){
+        for (Class<? extends Code2Enum> enumClass : enumClassSet) {
+            conversionService.addConverter(new Code2EnumConverter(enumClass));
+        }
     }
 
     private SimpleModule newSimpleModule(){
