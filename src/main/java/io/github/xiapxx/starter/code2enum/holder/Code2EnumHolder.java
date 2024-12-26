@@ -94,13 +94,12 @@ public class Code2EnumHolder {
     /**
      * 获取枚举信息
      *
-     * @param message 中文信息
-     * @param messageEn 英文信息
+     * @param code2Enum code2Enum
      * @return 枚举信息
      */
-    public static String getMessage(String message, String messageEn) {
+    public static String getMessage(Code2Enum code2Enum) {
         loadCode2EnumLanguageGetter();
-        return code2EnumLanguageGetter == null || code2EnumLanguageGetter.isChinese() ? message : messageEn;
+        return code2EnumLanguageGetter == null || code2EnumLanguageGetter.isChinese() ? code2Enum.getMessage() : code2Enum.getMessageEn();
     }
 
     /**

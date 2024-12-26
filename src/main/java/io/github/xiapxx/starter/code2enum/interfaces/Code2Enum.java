@@ -1,6 +1,7 @@
 package io.github.xiapxx.starter.code2enum.interfaces;
 
 import io.github.xiapxx.starter.code2enum.enums.EnumCodeJdbcType;
+import io.github.xiapxx.starter.code2enum.holder.Code2EnumHolder;
 import org.springframework.util.StringUtils;
 
 /**
@@ -44,6 +45,10 @@ public interface Code2Enum {
 
     default String getMessageEn(){
         return null;
+    }
+
+    default String toActualMessage() {
+        return Code2EnumHolder.getMessage(this);
     }
 
 }
