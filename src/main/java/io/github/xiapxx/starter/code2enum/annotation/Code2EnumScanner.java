@@ -1,6 +1,7 @@
 package io.github.xiapxx.starter.code2enum.annotation;
 
 import io.github.xiapxx.starter.code2enum.Code2EnumRegister;
+import io.github.xiapxx.starter.code2enum.feign.Code2EnumFeignAutoConfiguration;
 import org.springframework.context.annotation.Import;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -14,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import(Code2EnumRegister.class)
+@Import({Code2EnumRegister.class, Code2EnumFeignAutoConfiguration.class})
 public @interface Code2EnumScanner {
 
     String[] basePackages();
