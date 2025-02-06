@@ -31,11 +31,13 @@ public class Code2EnumRegister implements ImportBeanDefinitionRegistrar {
             return;
         }
 
-        registerCode2EnumHolderConfigurator(registry, code2EnumClassSet);
+        String beanNamePrefix = importMetadata.getClassName() + "#";
 
-        registerMybatisTypeHandlerRegister(registry, code2EnumClassSet);
+        registerCode2EnumHolderConfigurator(registry, beanNamePrefix, code2EnumClassSet);
 
-        registerWebDeserializerRegister(registry, code2EnumClassSet);
+        registerMybatisTypeHandlerRegister(registry, beanNamePrefix, code2EnumClassSet);
+
+        registerWebDeserializerRegister(registry, beanNamePrefix, code2EnumClassSet);
     }
 
 
@@ -43,15 +45,18 @@ public class Code2EnumRegister implements ImportBeanDefinitionRegistrar {
      * 注册Code2EnumHolder的配置类
      *
      * @param registry registry
+     * @param beanNamePrefix beanNamePrefix
      * @param code2EnumClassSet code2EnumClassSet
      */
-    private void registerCode2EnumHolderConfigurator(BeanDefinitionRegistry registry, Set<Class<? extends Code2Enum>> code2EnumClassSet){
+    private void registerCode2EnumHolderConfigurator(BeanDefinitionRegistry registry,
+                                                     String beanNamePrefix,
+                                                     Set<Class<? extends Code2Enum>> code2EnumClassSet) {
         Code2EnumHolderConfigurator code2EnumHolderConfigurator = new Code2EnumHolderConfigurator(code2EnumClassSet);
         code2EnumHolderConfigurator.initEnumData();
 
         BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
                 .genericBeanDefinition(Code2EnumHolderConfigurator.class, () -> code2EnumHolderConfigurator);
-        registry.registerBeanDefinition(Code2EnumHolderConfigurator.class.getName(), beanDefinitionBuilder.getBeanDefinition());
+        registry.registerBeanDefinition(beanNamePrefix + Code2EnumHolderConfigurator.class.getName(), beanDefinitionBuilder.getBeanDefinition());
     }
 
 
@@ -59,30 +64,36 @@ public class Code2EnumRegister implements ImportBeanDefinitionRegistrar {
      * 如果项目依赖了mybatis或mybatis plus, 那么将支持数据库中查询出的code转换为枚举对象
      *
      * @param registry registry
+     * @param beanNamePrefix beanNamePrefix
      * @param code2EnumClassSet 枚举类
      */
-    private void registerMybatisTypeHandlerRegister(BeanDefinitionRegistry registry, Set<Class<? extends Code2Enum>> code2EnumClassSet){
+    private void registerMybatisTypeHandlerRegister(BeanDefinitionRegistry registry,
+                                                    String beanNamePrefix,
+                                                    Set<Class<? extends Code2Enum>> code2EnumClassSet){
         Class typeHandlerRegisterClass = getTypeHandlerRegister();
         if(typeHandlerRegisterClass == null){
             return;
         }
         BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(typeHandlerRegisterClass);
         beanDefinitionBuilder.addConstructorArgValue(code2EnumClassSet);
-        registry.registerBeanDefinition(typeHandlerRegisterClass.getName(), beanDefinitionBuilder.getBeanDefinition());
+        registry.registerBeanDefinition(beanNamePrefix + typeHandlerRegisterClass.getName(), beanDefinitionBuilder.getBeanDefinition());
     }
 
     /**
      * 如果项目依赖了spring-boot-starter-web, 那么将支持前端传入的code转换为枚举对象
      *
      * @param registry registry
+     * @param beanNamePrefix beanNamePrefix
      * @param code2EnumClassSet 枚举类
      */
-    private void registerWebDeserializerRegister(BeanDefinitionRegistry registry, Set<Class<? extends Code2Enum>> code2EnumClassSet){
+    private void registerWebDeserializerRegister(BeanDefinitionRegistry registry,
+                                                 String beanNamePrefix,
+                                                 Set<Class<? extends Code2Enum>> code2EnumClassSet) {
         try {
             Class.forName("org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter");
             BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(Code2EnumSerializerRegister.class);
             beanDefinitionBuilder.addConstructorArgValue(code2EnumClassSet);
-            registry.registerBeanDefinition(Code2EnumSerializerRegister.class.getName(), beanDefinitionBuilder.getBeanDefinition());
+            registry.registerBeanDefinition(beanNamePrefix + Code2EnumSerializerRegister.class.getName(), beanDefinitionBuilder.getBeanDefinition());
         } catch (ClassNotFoundException e) {
         }
     }

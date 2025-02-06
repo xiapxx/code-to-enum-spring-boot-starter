@@ -6,6 +6,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +24,9 @@ public class Code2EnumHolder {
 
     static volatile boolean code2EnumLanguageGetterLoad = false;
 
-    static Map<Class<? extends Code2Enum>, Map<String, ? extends Code2Enum>> enumClass2Code2DataMap;
+    static Map<Class<? extends Code2Enum>, Map<String, ? extends Code2Enum>> enumClass2Code2DataMap = new HashMap<>();
 
-    static Map<String, List<Code2Enum>> enumClass2DataListMap;
+    static Map<String, List<Code2Enum>> enumClass2DataListMap = new HashMap<>();
 
     private Code2EnumHolder(){}
 
@@ -78,6 +79,11 @@ public class Code2EnumHolder {
         return (T) code2DataMap.get(code);
     }
 
+    public static boolean isChinese() {
+        loadCode2EnumLanguageGetter();
+        return code2EnumLanguageGetter == null || code2EnumLanguageGetter.isChinese();
+    }
+
     /**
      * 获取枚举类的所有值
      *
@@ -98,8 +104,7 @@ public class Code2EnumHolder {
      * @return 枚举信息
      */
     public static String getMessage(Code2Enum code2Enum) {
-        loadCode2EnumLanguageGetter();
-        return code2EnumLanguageGetter == null || code2EnumLanguageGetter.isChinese() ? code2Enum.getMessage() : code2Enum.getMessageEn();
+        return isChinese() ? code2Enum.getMessage() : code2Enum.getMessageEn();
     }
 
     /**

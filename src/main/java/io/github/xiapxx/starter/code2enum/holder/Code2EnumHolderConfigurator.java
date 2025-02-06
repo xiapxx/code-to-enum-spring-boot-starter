@@ -5,7 +5,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,19 +28,15 @@ public class Code2EnumHolderConfigurator implements ApplicationContextAware, Ord
      * 初始化枚举数据
      */
     public void initEnumData() {
-        Map<Class<? extends Code2Enum>, Map<String, ? extends Code2Enum>> enumClass2Code2DataMap = new HashMap<>();
-        Map<String, List<Code2Enum>> enumClass2DataListMap = new HashMap<>();
         for (Class<? extends Code2Enum> enumClass : enumClassSet) {
             Code2Enum[] code2Enums = enumClass.getEnumConstants();
 
             Map<String, Code2Enum> code2EnumMap = Stream.of(code2Enums).collect(Collectors.toMap(item -> item.getCode(), item -> item, (o, n) -> n));
-            enumClass2Code2DataMap.put(enumClass, code2EnumMap);
+            Code2EnumHolder.enumClass2Code2DataMap.put(enumClass, code2EnumMap);
 
             List<Code2Enum> code2EnumList = Stream.of(code2Enums).collect(Collectors.toList());
-            enumClass2DataListMap.put(enumClass.getName(), code2EnumList);
+            Code2EnumHolder.enumClass2DataListMap.put(enumClass.getName(), code2EnumList);
         }
-        Code2EnumHolder.enumClass2Code2DataMap = enumClass2Code2DataMap;
-        Code2EnumHolder.enumClass2DataListMap = enumClass2DataListMap;
     }
 
     @Override
