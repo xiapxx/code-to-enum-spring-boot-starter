@@ -32,10 +32,10 @@ public class Code2EnumHolderConfigurator implements ApplicationContextAware, Ord
             Code2Enum[] code2Enums = enumClass.getEnumConstants();
 
             Map<String, Code2Enum> code2EnumMap = Stream.of(code2Enums).collect(Collectors.toMap(item -> item.getCode(), item -> item, (o, n) -> n));
-            Code2EnumHolder.enumClass2Code2DataMap.put(enumClass, code2EnumMap);
+            Code2EnumHolder.enumClass2Code2DataMap.putIfAbsent(enumClass, code2EnumMap);
 
             List<Code2Enum> code2EnumList = Stream.of(code2Enums).collect(Collectors.toList());
-            Code2EnumHolder.enumClass2DataListMap.put(enumClass.getName(), code2EnumList);
+            Code2EnumHolder.enumClass2DataListMap.putIfAbsent(enumClass.getName(), code2EnumList);
         }
     }
 
