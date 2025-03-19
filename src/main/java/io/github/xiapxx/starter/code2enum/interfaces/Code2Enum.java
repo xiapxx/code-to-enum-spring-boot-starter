@@ -39,6 +39,15 @@ public interface Code2Enum {
         return EnumCodeJdbcType.INT;
     }
 
+    /**
+     * 有时候希望入库时, 并且枚举为null时, 可以写入一个默认的code, 实现该方法即可
+     *
+     * @return 枚举为null时, 默认code
+     */
+    default String jdbcDefaultCode() {
+        return null;
+    }
+
     default String getMessage(){
         return null;
     };
