@@ -78,6 +78,7 @@
 
 #### 控制层使用枚举
 
+    案例1:
     @PostMapping("/test")
     public XXXResponse test(@RequestBody XXXRequest request) {
         ... 
@@ -92,6 +93,14 @@
     {
         "sex":{"code":0, "message":"男"}
     }
+
+    案例2:
+    @GetMapping("/test")
+    public XXXResponse test(@RequestParam("sex") SexEnum sex) {
+        ... 
+    }
+
+    前端请求方式: Get, http://.../test?sex=0
     
 ## 支持国际化
     package com.xxx.enums
@@ -120,7 +129,7 @@
         
         public boolean isChinese() {
             // 此处判断是什么语言环境; true:中文环境 false:英文环境
-            // 控制层的响应实体在反序列化时被调用
+            // 控制层的出参实体在序列化时被调用
         }
     }
 
@@ -207,3 +216,26 @@
             return "2"; // 定义默认值, 2代表空
         }
     }
+
+## 使用Code2EnumHolder
+Code2EnumHolder是所有枚举(实现了Code2Enum接口)的持有者, 该方法提供了一些静态方法。
+* code转成枚举 : SexEnum sexEnum = Code2EnumHolder.toEnum("0", SexEnum.class);
+* 获取当前语言环境: boolean isChinese = Code2EnumHolder.isChinese();
+* 根据枚举全限定名获取枚举值列表: List<Code2Enum> enumList = Code2EnumHolder.toList("com.xxx.enums.SexEnum");
+* 获取当前语言环境对应的message: String message = Code2EnumHolder.getMessage(SexEnum.MALE);
+
+## 使用Code2EnumSerializer
+如果希望控制层的出参实体中的枚举(实现了Code2Enum接口)字段不返回{"code":0, "message":"男"}格式, 仅仅返回code。
+
+    @Getter
+    @Setter
+    public class XXXResponse {
+
+        @JsonSerialize(using = Code2EnumSerializer.class)  // 将直接返回code给前端
+        private SexEnum sex;
+
+    }
+
+## feign调用
+* 支持入参实体中包含枚举(实现了Code2Enum接口)
+* 不支持出参实体中包含枚举(实现了Code2Enum接口), 如果希望变相支持, 那么出参实体的枚举(实现了Code2Enum接口)字段需标注 @JsonSerialize(using = Code2EnumSerializer.class)
