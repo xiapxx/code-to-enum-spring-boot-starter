@@ -1,5 +1,6 @@
 package io.github.xiapxx.starter.code2enum.holder;
 
+import io.github.xiapxx.starter.code2enum.enums.WebSerializerType;
 import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
 import io.github.xiapxx.starter.code2enum.interfaces.Code2EnumLanguageGetter;
 import org.springframework.beans.factory.ObjectProvider;
@@ -28,7 +29,18 @@ public class Code2EnumHolder {
 
     static Map<String, List<Code2Enum>> enumClass2DataListMap = new HashMap<>();
 
+    static WebSerializerType webSerializerType;
+
     private Code2EnumHolder(){}
+
+    /**
+     * 获取全局的web序列化方式
+     *
+     * @return 全局的web序列化方式
+     */
+    public static WebSerializerType getWebSerializerType(){
+        return webSerializerType;
+    }
 
     /**
      * 获取枚举数据

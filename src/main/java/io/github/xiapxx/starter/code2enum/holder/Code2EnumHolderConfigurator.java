@@ -1,5 +1,6 @@
 package io.github.xiapxx.starter.code2enum.holder;
 
+import io.github.xiapxx.starter.code2enum.enums.WebSerializerType;
 import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -20,8 +21,9 @@ public class Code2EnumHolderConfigurator implements ApplicationContextAware, Ord
     private Set<Class<? extends Code2Enum>> enumClassSet;
 
 
-    public Code2EnumHolderConfigurator(Set<Class<? extends Code2Enum>> enumClassSet) {
+    public Code2EnumHolderConfigurator(Set<Class<? extends Code2Enum>> enumClassSet, WebSerializerType webSerializerType) {
         this.enumClassSet = enumClassSet;
+        Code2EnumHolder.webSerializerType = webSerializerType == null ? WebSerializerType.JSON : webSerializerType;
     }
 
     /**

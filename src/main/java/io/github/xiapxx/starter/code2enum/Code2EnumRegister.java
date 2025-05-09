@@ -1,6 +1,7 @@
 package io.github.xiapxx.starter.code2enum;
 
 import io.github.xiapxx.starter.code2enum.annotation.Code2EnumScanner;
+import io.github.xiapxx.starter.code2enum.enums.WebSerializerType;
 import io.github.xiapxx.starter.code2enum.holder.Code2EnumHolderConfigurator;
 import io.github.xiapxx.starter.code2enum.webserializer.Code2EnumSerializerRegister;
 import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
@@ -26,14 +27,15 @@ public class Code2EnumRegister implements ImportBeanDefinitionRegistrar {
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importMetadata, BeanDefinitionRegistry registry) {
-        Set<Class<? extends Code2Enum>> code2EnumClassSet = scanEnumClass(importMetadata);
+        AnnotationAttributes annoAttrs = AnnotationAttributes.fromMap(importMetadata.getAnnotationAttributes(Code2EnumScanner.class.getName()));
+        Set<Class<? extends Code2Enum>> code2EnumClassSet = scanEnumClass(annoAttrs.getStringArray("basePackages"));
         if(code2EnumClassSet == null || code2EnumClassSet.isEmpty()){
             return;
         }
 
         String beanNamePrefix = importMetadata.getClassName() + "#";
 
-        registerCode2EnumHolderConfigurator(registry, beanNamePrefix, code2EnumClassSet);
+        registerCode2EnumHolderConfigurator(registry, beanNamePrefix, code2EnumClassSet, annoAttrs.getEnum("webSerializerType"));
 
         registerMybatisTypeHandlerRegister(registry, beanNamePrefix, code2EnumClassSet);
 
@@ -47,11 +49,13 @@ public class Code2EnumRegister implements ImportBeanDefinitionRegistrar {
      * @param registry registry
      * @param beanNamePrefix beanNamePrefix
      * @param code2EnumClassSet code2EnumClassSet
+     * @param webSerializerType webSerializerType
      */
     private void registerCode2EnumHolderConfigurator(BeanDefinitionRegistry registry,
                                                      String beanNamePrefix,
-                                                     Set<Class<? extends Code2Enum>> code2EnumClassSet) {
-        Code2EnumHolderConfigurator code2EnumHolderConfigurator = new Code2EnumHolderConfigurator(code2EnumClassSet);
+                                                     Set<Class<? extends Code2Enum>> code2EnumClassSet,
+                                                     WebSerializerType webSerializerType) {
+        Code2EnumHolderConfigurator code2EnumHolderConfigurator = new Code2EnumHolderConfigurator(code2EnumClassSet, webSerializerType);
         code2EnumHolderConfigurator.initEnumData();
 
         BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder
@@ -101,12 +105,10 @@ public class Code2EnumRegister implements ImportBeanDefinitionRegistrar {
     /**
      * 扫描枚举类
      *
-     * @param importMetadata importMetadata
+     * @param basePackages basePackages
      * @return 字典类
      */
-    private Set<Class<? extends Code2Enum>> scanEnumClass(AnnotationMetadata importMetadata){
-        AnnotationAttributes annoAttrs = AnnotationAttributes.fromMap(importMetadata.getAnnotationAttributes(Code2EnumScanner.class.getName()));
-        String[] basePackages = annoAttrs.getStringArray("basePackages");
+    private Set<Class<? extends Code2Enum>> scanEnumClass(String[] basePackages){
         Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages(basePackages));
         Set<Class<? extends Code2Enum>> code2EnumClassSet = reflections.getSubTypesOf(Code2Enum.class);
 
