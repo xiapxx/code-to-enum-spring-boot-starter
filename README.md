@@ -17,7 +17,7 @@
 <dependency>
     <groupId>io.github.xiapxx</groupId>
     <artifactId>code-to-enum-spring-boot-starter</artifactId>
-    <version>2.1.6</version>
+    <version>2.1.7</version>
  </dependency>
 ~~~~ 
 
