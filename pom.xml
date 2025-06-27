@@ -11,7 +11,7 @@
     <scm>
         <url>https://github.com/xiapxx/code-to-enum-spring-boot-starter.git</url>
     </scm>
-
+    <name>编码转换枚举</name>
     <description>编码转换枚举</description>
     <developers>
         <developer>
