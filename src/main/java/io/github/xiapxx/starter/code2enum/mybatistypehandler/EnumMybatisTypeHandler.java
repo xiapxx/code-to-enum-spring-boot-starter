@@ -1,5 +1,7 @@
 package io.github.xiapxx.starter.code2enum.mybatistypehandler;
 
+import io.github.xiapxx.starter.code2enum.annotation.Code2EnumConfig;
+import io.github.xiapxx.starter.code2enum.constants.Code2EnumConstants;
 import io.github.xiapxx.starter.code2enum.enums.EnumCodeJdbcType;
 import io.github.xiapxx.starter.code2enum.holder.Code2EnumHolder;
 import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
@@ -11,7 +13,6 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.stream.Stream;
 
 /**
  * @Author xiapeng
@@ -27,10 +28,11 @@ public class EnumMybatisTypeHandler<T extends Code2Enum> extends BaseTypeHandler
 
     public EnumMybatisTypeHandler(Class<T> enum2CodeClass){
         this.enum2CodeClass = enum2CodeClass;
-        T anyEnum = Stream.of(enum2CodeClass.getEnumConstants()).findAny().orElse(null);
-        if (anyEnum != null) {
-            this.jdbcDefaultCode = anyEnum.jdbcDefaultCode();
-            this.enumCodeJdbcType = anyEnum.enumCodeJdbcType();
+        this.enumCodeJdbcType = EnumCodeJdbcType.INT;
+        Code2EnumConfig code2EnumConfig = enum2CodeClass.getAnnotation(Code2EnumConfig.class);
+        if (code2EnumConfig != null) {
+            this.enumCodeJdbcType = code2EnumConfig.codeJdbcType();
+            this.jdbcDefaultCode = Code2EnumConstants.EMPTY.equals(code2EnumConfig.jdbcDefaultCode()) ? null : code2EnumConfig.jdbcDefaultCode();
         }
     }
 

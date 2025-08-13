@@ -1,5 +1,7 @@
 package io.github.xiapxx.starter.code2enum.holder;
 
+import io.github.xiapxx.starter.code2enum.annotation.Code2EnumConfig;
+import io.github.xiapxx.starter.code2enum.constants.Code2EnumConstants;
 import io.github.xiapxx.starter.code2enum.enums.WebSerializerType;
 import io.github.xiapxx.starter.code2enum.interfaces.Code2Enum;
 import org.springframework.beans.BeansException;
@@ -38,7 +40,24 @@ public class Code2EnumHolderConfigurator implements ApplicationContextAware, Ord
 
             List<Code2Enum> code2EnumList = Stream.of(code2Enums).collect(Collectors.toList());
             Code2EnumHolder.enumClass2DataListMap.putIfAbsent(enumClass.getName(), code2EnumList);
+            loadAlias2DataListMap(enumClass, code2EnumList);
         }
+    }
+
+    /**
+     * 加载Code2EnumHolder.alias2DataListMap
+     *
+     * @param enumClass enumClass
+     * @param code2EnumList code2EnumList
+     */
+    private void loadAlias2DataListMap(Class<? extends Code2Enum> enumClass, List<Code2Enum> code2EnumList) {
+        Code2EnumConfig code2EnumConfig = enumClass.getAnnotation(Code2EnumConfig.class);
+        if (code2EnumConfig == null
+                || Code2EnumConstants.EMPTY.equals(code2EnumConfig.alias())) {
+            return;
+        }
+
+        Code2EnumHolder.alias2DataListMap.putIfAbsent(code2EnumConfig.alias(), code2EnumList);
     }
 
     @Override
