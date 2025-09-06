@@ -7,9 +7,11 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Code2Enum的枚举持有者
@@ -28,6 +30,8 @@ public class Code2EnumHolder {
     static Map<Class<? extends Code2Enum>, Map<String, ? extends Code2Enum>> enumClass2Code2DataMap = new HashMap<>();
 
     static Map<String, List<Code2Enum>> enumClass2DataListMap = new HashMap<>();
+
+    static Map<String, List<Code2Enum>> alias2DataListMap = new HashMap<>();
 
     static WebSerializerType webSerializerType;
 
@@ -103,10 +107,53 @@ public class Code2EnumHolder {
      * @return 枚举类所有值
      */
     public static List<Code2Enum> toList(String code2EnumClassName){
-        if(!StringUtils.hasLength(code2EnumClassName)){
+        return toList(code2EnumClassName, null);
+    }
+
+    /**
+     * 获取枚举的所有值
+     *
+     * @param code2EnumName 枚举类名或别名
+     * @param execludCodes 排除掉的code
+     * @return 枚举类所有值
+     */
+    public static List<Code2Enum> toList(String code2EnumName, List<String> execludCodes) {
+        if(!StringUtils.hasLength(code2EnumName)){
             return new ArrayList<>();
         }
-        return enumClass2DataListMap.get(code2EnumClassName);
+        boolean isClassName = code2EnumName.contains(".");
+        return isClassName
+                ? toList(enumClass2DataListMap, code2EnumName, execludCodes)
+                : toList(alias2DataListMap, code2EnumName, execludCodes);
+    }
+
+    /**
+     * 获取枚举的所有值
+     *
+     * @param code2EnumName2DataList code2EnumName2DataList
+     * @param code2EnumName 枚举类名或别名
+     * @param execludCodes 排除掉的code
+     * @return 枚举类所有值
+     */
+    private static List<Code2Enum> toList(Map<String, List<Code2Enum>> code2EnumName2DataList,
+                                          String code2EnumName,
+                                          Collection<String> execludCodes) {
+        if(code2EnumName2DataList == null || code2EnumName2DataList.isEmpty()){
+            return new ArrayList<>();
+        }
+
+        List<Code2Enum> dataList = code2EnumName2DataList.get(code2EnumName);
+        if(dataList == null || dataList.isEmpty()){
+            return new ArrayList<>();
+        }
+
+        if(execludCodes == null || execludCodes.isEmpty()){
+            return dataList;
+        }
+
+        return dataList.stream()
+                .filter(item -> !execludCodes.contains(item.getCode()))
+                .collect(Collectors.toList());
     }
 
     /**

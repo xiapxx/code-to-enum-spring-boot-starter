@@ -9,7 +9,7 @@
 
 ### 当前端收到sex=0时, 前端需要将sex转换成'男'
     由前端转换虽然是常见的做法, 但稍显麻烦, 后续所有涉及该字段的地方都要转换一次。 
-    该组件可以直接返回给前端{code:0, message:'男'}
+    该组件可以直接返回给前端{code:0, message:'男'} 或 0 或 男
 
 ## 如何使用？
 ### 引入依赖
@@ -17,7 +17,7 @@
 <dependency>
     <groupId>io.github.xiapxx</groupId>
     <artifactId>code-to-enum-spring-boot-starter</artifactId>
-    <version>2.1.8</version>
+    <version>2.1.9</version>
  </dependency>
 ~~~~ 
 
@@ -172,6 +172,7 @@
 
     package com.xxx.enums
     ...
+    @Code2EnumConfig(codeJdbcType = EnumCodeJdbcType.INT)  // 指定code的jdbc类型, 支持int(默认), string, long
     public enum SexEnum implements Code2Enum {
         MALE("0", "男"),
         FEMALE("1", "女");
@@ -186,10 +187,6 @@
             this.message = message;    
         }
 
-        // 指定code的jdbc类型
-        EnumCodeJdbcType enumCodeJdbcType(){
-            return EnumCodeJdbcType.INT;  // 支持int(默认), string, long
-        }
     }
 
 ## 默认值
@@ -198,6 +195,7 @@
 
     package com.xxx.enums
     ...
+    @Code2EnumConfig(jdbcDefaultCode = "2") // 定义默认值
     public enum SexEnum implements Code2Enum {
         MALE("0", "男"),
         FEMALE("1", "女");
@@ -211,10 +209,30 @@
             this.code = code;
             this.message = message;    
         }
+ 
+    }
 
-        pulbic String jdbcDefaultCode() {
-            return "2"; // 定义默认值, 2代表空
+## 别名
+    使用Code2EnumHolder.toList("com.xxx.enums.SexEnum")时, 需要传入类的全限定名, 有时候不希望使用这么长的名字
+    可以定义别名: Code2EnumHolder.toList("sexEnum")
+
+    package com.xxx.enums
+    ...
+    @Code2EnumConfig(alias = "sexEnum") // 定义别名
+    public enum SexEnum implements Code2Enum {
+        MALE("0", "男"),
+        FEMALE("1", "女");
+
+        @Getter
+        private String code;
+        @Getter
+        private String message;
+
+        SexEnum(String code, String message){
+            this.code = code;
+            this.message = message;    
         }
+ 
     }
 
 ## 使用Code2EnumHolder
@@ -222,6 +240,7 @@ Code2EnumHolder是所有枚举(实现了Code2Enum接口)的持有者, 该方法�
 * code转成枚举 : SexEnum sexEnum = Code2EnumHolder.toEnum("0", SexEnum.class);
 * 获取当前语言环境: boolean isChinese = Code2EnumHolder.isChinese();
 * 根据枚举全限定名获取枚举值列表: List<Code2Enum> enumList = Code2EnumHolder.toList("com.xxx.enums.SexEnum");
+* 根据枚举全限定名获取枚举值列表, 并过滤部分‘男’这一项: List<Code2Enum> enumList = Code2EnumHolder.toList("com.xxx.enums.SexEnum", Lists.newArrayList("0"));
 * 获取当前语言环境对应的message: String message = Code2EnumHolder.getMessage(SexEnum.MALE);
 
 ## 使用Code2EnumSerializer
