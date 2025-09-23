@@ -40,6 +40,7 @@ public class Code2EnumHolderConfigurator implements ApplicationContextAware, Ord
 
             List<Code2Enum> code2EnumList = Stream.of(code2Enums).collect(Collectors.toList());
             Code2EnumHolder.enumClass2DataListMap.putIfAbsent(enumClass.getName(), code2EnumList);
+
             loadAlias2DataListMap(enumClass, code2EnumList);
         }
     }
@@ -56,8 +57,14 @@ public class Code2EnumHolderConfigurator implements ApplicationContextAware, Ord
                 || Code2EnumConstants.EMPTY.equals(code2EnumConfig.alias())) {
             return;
         }
-
-        Code2EnumHolder.alias2DataListMap.putIfAbsent(code2EnumConfig.alias(), code2EnumList);
+        List<Code2Enum> oldCode2EnumList = Code2EnumHolder.alias2DataListMap.get(code2EnumConfig.alias());
+        if (oldCode2EnumList != null && oldCode2EnumList.size() > 0) {
+            Class oldEnumClass = oldCode2EnumList.get(0).getClass();
+            if (enumClass != oldEnumClass) {
+                throw new IllegalArgumentException(oldEnumClass.getName() + "与" + enumClass.getName() + "的别名冲突 : " + code2EnumConfig.alias());
+            }
+        }
+        Code2EnumHolder.alias2DataListMap.put(code2EnumConfig.alias(), code2EnumList);
     }
 
     @Override
