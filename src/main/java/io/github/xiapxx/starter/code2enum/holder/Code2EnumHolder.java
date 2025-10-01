@@ -54,11 +54,24 @@ public class Code2EnumHolder {
      * @return 枚举数据
      * @param <T>
      */
-    public static <T extends Code2Enum> T toEnum(Long code, Class<T> code2EnumClass){
+    public static <T extends Code2Enum> T toEnum(Long code, Class<T> code2EnumClass) {
+        return toEnum(code, code2EnumClass, null);
+    }
+
+    /**
+     * 获取枚举数据
+     *
+     * @param code code
+     * @param code2EnumClass code2EnumClass
+     * @param defaultEnum 默认值
+     * @return 枚举数据
+     * @param <T>
+     */
+    public static <T extends Code2Enum> T toEnum(Long code, Class<T> code2EnumClass, T defaultEnum) {
         if(code == null){
-            return null;
+            return defaultEnum;
         }
-        return toEnum(code.toString(), code2EnumClass);
+        return toEnum(code.toString(), code2EnumClass, defaultEnum);
     }
 
     /**
@@ -69,11 +82,24 @@ public class Code2EnumHolder {
      * @return 枚举数据
      * @param <T>
      */
-    public static <T extends Code2Enum> T toEnum(Integer code, Class<T> code2EnumClass){
+    public static <T extends Code2Enum> T toEnum(Integer code, Class<T> code2EnumClass) {
+        return toEnum(code, code2EnumClass, null);
+    }
+
+    /**
+     * 获取枚举数据
+     *
+     * @param code code
+     * @param code2EnumClass code2EnumClass
+     * @param defaultEnum 默认值
+     * @return 枚举数据
+     * @param <T>
+     */
+    public static <T extends Code2Enum> T toEnum(Integer code, Class<T> code2EnumClass, T defaultEnum) {
         if(code == null){
-            return null;
+            return defaultEnum;
         }
-        return toEnum(code.toString(), code2EnumClass);
+        return toEnum(code.toString(), code2EnumClass, defaultEnum);
     }
 
     /**
@@ -85,14 +111,31 @@ public class Code2EnumHolder {
      * @param <T>
      */
     public static <T extends Code2Enum> T toEnum(String code, Class<T> code2EnumClass) {
+        return toEnum(code, code2EnumClass, null);
+    }
+
+    /**
+     * 获取枚举数据
+     *
+     * @param code code
+     * @param code2EnumClass code2EnumClass
+     * @param defaultEnum 默认值
+     * @return 枚举数据
+     * @param <T>
+     */
+    public static <T extends Code2Enum> T toEnum(String code, Class<T> code2EnumClass, T defaultEnum) {
         if(!StringUtils.hasLength(code) || code2EnumClass == null){
-            return null;
+            return defaultEnum;
         }
         Map<String, ? extends Code2Enum> code2DataMap = enumClass2Code2DataMap.get(code2EnumClass);
         if(code2DataMap == null){
-            return null;
+            return defaultEnum;
         }
-        return (T) code2DataMap.get(code);
+        Code2Enum code2Enum = code2DataMap.get(code);
+        if(code2Enum == null){
+            return defaultEnum;
+        }
+        return (T) code2Enum;
     }
 
     public static boolean isChinese() {
@@ -132,12 +175,12 @@ public class Code2EnumHolder {
      *
      * @param code2EnumName2DataList code2EnumName2DataList
      * @param code2EnumName 枚举类名或别名
-     * @param execludCodes 排除掉的code
+     * @param excludeCodes 排除掉的code
      * @return 枚举类所有值
      */
     private static List<Code2Enum> toList(Map<String, List<Code2Enum>> code2EnumName2DataList,
                                           String code2EnumName,
-                                          Collection<String> execludCodes) {
+                                          Collection<String> excludeCodes) {
         if(code2EnumName2DataList == null || code2EnumName2DataList.isEmpty()){
             return new ArrayList<>();
         }
@@ -147,12 +190,12 @@ public class Code2EnumHolder {
             return new ArrayList<>();
         }
 
-        if(execludCodes == null || execludCodes.isEmpty()){
+        if(excludeCodes == null || excludeCodes.isEmpty()){
             return dataList;
         }
 
         return dataList.stream()
-                .filter(item -> !execludCodes.contains(item.getCode()))
+                .filter(item -> !excludeCodes.contains(item.getCode()))
                 .collect(Collectors.toList());
     }
 
