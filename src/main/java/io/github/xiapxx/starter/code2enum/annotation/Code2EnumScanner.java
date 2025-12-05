@@ -25,6 +25,7 @@ public @interface Code2EnumScanner {
 
     /**
      * 通过controller层返回给前端的格式
+     *
      * WebSerializerType.JSON(默认方式): {"code":"1", "message":"男"}
      * WebSerializerType.CODE: "1"
      * WebSerializerType.MSG: "男"

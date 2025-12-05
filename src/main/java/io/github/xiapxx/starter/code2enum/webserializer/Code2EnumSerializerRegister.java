@@ -56,7 +56,7 @@ public class Code2EnumSerializerRegister<T extends Code2Enum> implements BeanPos
         SimpleModule simpleModule = new SimpleModule();
         for (Class<? extends Code2Enum> enumClass : enumClassSet) {
             Class<T> itemEnumClass = (Class<T>) enumClass;
-            simpleModule.addSerializer(itemEnumClass, new Code2EnumSerializer<>());
+            simpleModule.addSerializer(itemEnumClass, new Code2EnumSerializer<>(itemEnumClass));
             simpleModule.addDeserializer(itemEnumClass, new Code2EnumDeserializer<>(itemEnumClass));
         }
         return simpleModule;

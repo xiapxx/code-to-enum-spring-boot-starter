@@ -1,6 +1,7 @@
 package io.github.xiapxx.starter.code2enum.annotation;
 
 import io.github.xiapxx.starter.code2enum.enums.EnumCodeJdbcType;
+import io.github.xiapxx.starter.code2enum.enums.EnumCodeWebType;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,6 +31,13 @@ public @interface Code2EnumConfig {
      * @return 为空代表null
      */
     String jdbcDefaultCode() default EMPTY;
+
+    /**
+     * 希望code字段返回给前端时是以什么类型;
+     *
+     * @return 字符串或数字
+     */
+    EnumCodeWebType codeWebType() default EnumCodeWebType.NUMBER;
 
     /**
      * 别名
