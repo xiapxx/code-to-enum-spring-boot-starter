@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import io.github.xiapxx.starter.code2enum.annotation.Code2EnumConfig;
 import io.github.xiapxx.starter.code2enum.entity.Code2EnumWrapper;
-import io.github.xiapxx.starter.code2enum.enums.EnumCodeWebType;
+import io.github.xiapxx.starter.code2enum.enums.EnumCodeJdbcType;
 import io.github.xiapxx.starter.code2enum.enums.WebSerializerType;
 import io.github.xiapxx.starter.code2enum.feign.Code2EnumFeignHolder;
 import io.github.xiapxx.starter.code2enum.holder.Code2EnumHolder;
@@ -18,13 +18,13 @@ import java.io.IOException;
  */
 public class Code2EnumSerializer<T extends Code2Enum> extends JsonSerializer<T> {
 
-    private EnumCodeWebType enumCodeWebType;
+    private EnumCodeJdbcType enumCodeJdbcType;
 
     public Code2EnumSerializer(Class<T> enum2CodeClass) {
-        this.enumCodeWebType = EnumCodeWebType.NUMBER;
+        this.enumCodeJdbcType = EnumCodeJdbcType.INT;
         Code2EnumConfig code2EnumConfig = enum2CodeClass.getAnnotation(Code2EnumConfig.class);
         if (code2EnumConfig != null) {
-            this.enumCodeWebType = code2EnumConfig.codeWebType();
+            this.enumCodeJdbcType = code2EnumConfig.codeJdbcType();
         }
     }
 
@@ -61,11 +61,12 @@ public class Code2EnumSerializer<T extends Code2Enum> extends JsonSerializer<T> 
      * @param value value
      */
     private void onSerializerTypeIsCode(JsonGenerator gen, T value) throws IOException {
-        switch (enumCodeWebType) {
+        switch (enumCodeJdbcType) {
             case STRING:
                 gen.writeString(value.getCode());
                 break;
-            case NUMBER:
+            case LONG:
+            case INT:
                 gen.writeNumber(value.getIntCode());
                 break;
         }
@@ -79,7 +80,7 @@ public class Code2EnumSerializer<T extends Code2Enum> extends JsonSerializer<T> 
      */
     private void serializeToJson(JsonGenerator gen, T value) throws IOException {
         Code2EnumWrapper enumWrapper = new Code2EnumWrapper();
-        enumWrapper.setCode(EnumCodeWebType.STRING == enumCodeWebType ? value.getCode() : value.getIntCode());
+        enumWrapper.setCode(EnumCodeJdbcType.STRING == enumCodeJdbcType ? value.getCode() : value.getIntCode());
         enumWrapper.setMessage(value.toActualMessage());
         gen.writeObject(enumWrapper);
     }
